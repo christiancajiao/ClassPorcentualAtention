@@ -22,8 +22,9 @@ services:
     region: oregon
     plan: free
     branch: main
-    buildCommand: cd Frontend && npm install && npm run build
-    startCommand: cd Frontend && npx serve -s dist -l $PORT
+    rootDir: Frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -p $PORT
     envVars:
       - key: NODE_VERSION
-        value: "20.11.1"
+        value: "20.18.0"
