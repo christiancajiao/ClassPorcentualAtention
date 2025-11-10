@@ -22,7 +22,7 @@ services:
     region: oregon
     plan: free
     branch: main
-    rootDir: frontend
+    rootDir: Frontend
     buildCommand: npm install && npm run build
     startCommand: npx serve -s build -p $PORT
     envVars:
