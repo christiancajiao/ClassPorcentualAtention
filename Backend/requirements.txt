@@ -1,36 +1,23 @@
-# Core
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-websockets==12.0
+# Core web framework
+fastapi==0.115.5
+uvicorn==0.32.0
 
-# Computer Vision & AI
-opencv-python==4.8.1.78
-mediapipe==0.10.8
-numpy==1.24.3
-pillow==10.1.0
+# Imagen / Video
+opencv-python-headless==4.10.0.84
+mediapipe==0.10.14
+numpy==1.26.4
 
-# Deep Learning
-torch==2.1.0
-torchvision==0.16.0
+# Machine Learning CPU
+tensorflow-cpu==2.15.0
+scikit-learn==1.5.2
 
-# Face Recognition & Analysis
-deepface==0.0.79
-fer==22.5.1
+# Utilidades
+pandas==2.2.3
+matplotlib==3.9.2
 
-# Tracking
-filterpy==1.4.5
-scipy==1.11.4
+# Asíncrono y tipado
+asyncio==3.4.3
+python-multipart==0.0.9
 
-# Utilities
-python-dotenv==1.0.0
-pydantic==2.5.0
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-
-# Database (opcional)
-sqlalchemy==2.0.23
-pymongo==4.6.0
-
-# Image processing
-scikit-image==0.22.0
+# Logging y rendimiento
+psutil==6.0.0
