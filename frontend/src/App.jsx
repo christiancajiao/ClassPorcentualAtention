@@ -57,6 +57,9 @@ export default function AttentionAnalysisApp() {
         setIsStreaming(true);
         setError(null);
 
+        // 👈 Mensaje inicial para mantener viva la conexión
+        ws.send(JSON.stringify({ type: "init" }));
+
         // Comenzar a enviar frames cada 100ms (10 fps)
         intervalRef.current = setInterval(() => {
           captureAndSendFrame();
