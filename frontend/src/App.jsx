@@ -13,19 +13,16 @@ export default function AttentionAnalysisApp() {
   const wsRef = useRef(null);
   const streamRef = useRef(null);
   const intervalRef = useRef(null);
+  // Detecta si el frontend corre en Render o local
+  const backendHost = window.location.hostname.includes("onrender.com")
+    ? "atencion-backend-n1eu.onrender.com"
+    : "localhost:8000";
 
-  // Detecta si estás en Render (producción) o local
-  const backendBaseUrl =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+  // Usa protocolo seguro según el entorno
+  const wsProtocol = backendHost.includes("onrender.com") ? "wss" : "ws";
 
-  // Determina el protocolo WS adecuado (ws:// o wss://)
-  const wsProtocol = backendBaseUrl.startsWith("https") ? "wss" : "ws";
-
-  // Arma la URL base para WebSocket
-  const WS_URL = `${wsProtocol}://${backendBaseUrl.replace(
-    /^https?:\/\//,
-    ""
-  )}/ws/analyze/`;
+  // Construye la URL completa para el WebSocket
+  const WS_URL = `${wsProtocol}://${backendHost}/ws/analyze/`;
 
   const generateSessionId = () => {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
