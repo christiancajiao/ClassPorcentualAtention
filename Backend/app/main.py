@@ -9,9 +9,9 @@ import asyncio
 from typing import Dict, List
 import logging
 
-from models.face_detector import FaceDetector
-from models.tracker import StudentTracker
-from models.attention_analyzer import AttentionAnalyzer
+from app.models.face_detector import FaceDetector
+from app.models.tracker import StudentTracker
+from app.models.attention_analyzer import AttentionAnalyzer
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
