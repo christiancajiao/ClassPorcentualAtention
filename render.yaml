@@ -24,7 +24,8 @@ services:
     branch: main
     rootDir: Frontend
     buildCommand: npm install && npm run build
-    startCommand: npx serve -s dist -p $PORT
+    startCommand: npm run start
     envVars:
       - key: NODE_VERSION
-        value: "20.18.0"
+        value: "20.11.1"
+
