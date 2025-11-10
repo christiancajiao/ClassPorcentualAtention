@@ -13,16 +13,10 @@ export default function AttentionAnalysisApp() {
   const wsRef = useRef(null);
   const streamRef = useRef(null);
   const intervalRef = useRef(null);
-  // Detecta si el frontend corre en Render o local
-  const backendHost = window.location.hostname.includes("onrender.com")
-    ? "atencion-backend-n1eu.onrender.com"
-    : "localhost:8000";
 
-  // Usa protocolo seguro según el entorno
-  const wsProtocol = backendHost.includes("onrender.com") ? "wss" : "ws";
-
-  // Construye la URL completa para el WebSocket
-  const WS_URL = `${wsProtocol}://${backendHost}/ws/analyze/`;
+  // ⚠️ IMPORTANTE: Cambia esta URL por la exacta de tu backend
+  const BACKEND_URL = "https://atencion-backend-n1eu.onrender.com";
+  const WS_URL = BACKEND_URL.replace("https://", "wss://");
 
   const generateSessionId = () => {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -31,6 +25,9 @@ export default function AttentionAnalysisApp() {
   const startStream = async () => {
     try {
       setError(null);
+
+      console.log("🎥 Iniciando stream...");
+      console.log("🔗 Backend URL:", BACKEND_URL);
 
       // Solicitar acceso a la cámara
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -48,13 +45,17 @@ export default function AttentionAnalysisApp() {
       const newSessionId = generateSessionId();
       setSessionId(newSessionId);
 
-      // Conectar WebSocket
-      const ws = new WebSocket(`${WS_URL}${newSessionId}`);
+      // Conectar WebSocket con la URL correcta
+      const websocketUrl = `${WS_URL}/ws/analyze/${newSessionId}`;
+      console.log("🔌 Conectando WebSocket a:", websocketUrl);
+
+      const ws = new WebSocket(websocketUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log("WebSocket conectado");
+        console.log("✅ WebSocket conectado exitosamente");
         setIsStreaming(true);
+        setError(null);
 
         // Comenzar a enviar frames cada 100ms (10 fps)
         intervalRef.current = setInterval(() => {
@@ -63,6 +64,7 @@ export default function AttentionAnalysisApp() {
       };
 
       ws.onmessage = (event) => {
+        console.log("📩 Mensaje recibido:", event.data);
         const message = JSON.parse(event.data);
 
         if (message.type === "analysis") {
@@ -74,20 +76,26 @@ export default function AttentionAnalysisApp() {
           setFinalResults(message.data);
           stopStream();
         } else if (message.type === "error") {
+          console.error("❌ Error del servidor:", message.message);
           setError(message.message);
         }
       };
 
       ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-        setError("Error de conexión con el servidor");
+        console.error("❌ WebSocket error:", error);
+        setError(
+          "Error de conexión con el servidor. El backend puede estar durmiendo. Espera 1 minuto e intenta de nuevo."
+        );
       };
 
-      ws.onclose = () => {
-        console.log("WebSocket cerrado");
+      ws.onclose = (event) => {
+        console.log("🔌 WebSocket cerrado:", event.code, event.reason);
+        if (event.code !== 1000) {
+          setError("Conexión cerrada inesperadamente. Código: " + event.code);
+        }
       };
     } catch (err) {
-      console.error("Error iniciando stream:", err);
+      console.error("❌ Error iniciando stream:", err);
       setError("No se pudo acceder a la cámara. Verifica los permisos.");
     }
   };
