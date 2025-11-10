@@ -7,11 +7,21 @@ import base64
 from datetime import datetime, timedelta
 import time
 import gc
-
+# Intentar importar la clase desde el paquete app
 try:
-    from app.penalties_config import PenaltyConfig
-    config = PenaltyConfig()
+    import app.penalties_config as pc
+    config = pc.PenaltyConfig()
+
+    # Verificar que el atributo CLEANUP_INTERVAL exista
+    if not hasattr(config, "CLEANUP_INTERVAL"):
+        print("⚠️ WARNING: 'CLEANUP_INTERVAL' no encontrado en PenaltyConfig, agregando valor por defecto")
+        setattr(config, "CLEANUP_INTERVAL", 600)
+        setattr(config, "INACTIVE_TIMEOUT", 300)
+
 except ImportError:
+    # Fallback si no se encuentra el módulo
+    print("⚠️ WARNING: app.penalties_config no encontrado, usando configuración por defecto")
+    
     class PenaltyConfig:
         PENALTY_GAZE_DEVIATION = 0.002
         PENALTY_HEAD_SIDE = 0.01
@@ -27,7 +37,16 @@ except ImportError:
         CLEANUP_INTERVAL = 600  # segundos
         INACTIVE_TIMEOUT = 300  # segundos
 
+    pc = None
+    config = PenaltyConfig()
 
+# Logging opcional para depuración
+if pc:
+    print("✅ PenaltyConfig cargado desde:", pc.__file__)
+else:
+    print("✅ PenaltyConfig fallback cargado")
+
+print("📌 Atributos disponibles en PenaltyConfig:", dir(config))
 class AttentionAnalyzer:
     """
     Analiza la atención de estudiantes con limpieza automática y control de memoria
