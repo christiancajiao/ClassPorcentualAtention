@@ -41,7 +41,7 @@ class AttentionAnalyzer:
         self.mp_face_mesh = mp.solutions.face_mesh
         self.mp_pose = mp.solutions.pose
         self.face_mesh = self.mp_face_mesh.FaceMesh(
-            max_num_faces=30,
+            max_num_faces=30, #limite de cantidad de rostros a detectar
             refine_landmarks=True,
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5

@@ -14,7 +14,18 @@ export default function AttentionAnalysisApp() {
   const streamRef = useRef(null);
   const intervalRef = useRef(null);
 
-  const WS_URL = "ws://localhost:8000/ws/analyze/";
+  // Detecta si estás en Render (producción) o local
+  const backendBaseUrl =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+  // Determina el protocolo WS adecuado (ws:// o wss://)
+  const wsProtocol = backendBaseUrl.startsWith("https") ? "wss" : "ws";
+
+  // Arma la URL base para WebSocket
+  const WS_URL = `${wsProtocol}://${backendBaseUrl.replace(
+    /^https?:\/\//,
+    ""
+  )}/ws/analyze/`;
 
   const generateSessionId = () => {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
