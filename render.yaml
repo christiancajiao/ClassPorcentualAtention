@@ -11,22 +11,20 @@ services:
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: "3.10"
+        value: "3.10.14"
       - key: CORS_ORIGINS
-        value: https://atencion-frontend.onrender.com
-    healthCheckPath: /health
+        value: "*"
     
   # Frontend React
   - type: web
     name: atencion-frontend
     env: node
+    region: oregon
     plan: free
     branch: main
-    rootDir: Frontend
+    rootDir: frontend
     buildCommand: npm install && npm run build
     startCommand: npx serve -s build -p $PORT
     envVars:
-      - key: REACT_APP_API_URL
-        value: https://atencion-backend.onrender.com
-      - key: REACT_APP_WS_URL
-        value: wss://atencion-backend.onrender.com
+      - key: NODE_VERSION
+        value: "18.17.0"
