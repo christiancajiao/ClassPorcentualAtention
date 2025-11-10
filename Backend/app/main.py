@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import cv2
 import numpy as np
 import base64
@@ -8,10 +9,10 @@ import asyncio
 from typing import Dict, List
 import logging
 
-from app.models.face_detector import FaceDetector
-from app.models.tracker import StudentTracker
-from app.models.attention_analyzer import AttentionAnalyzer
-from app.penalties_config import PenaltyConfig
+from models.face_detector import FaceDetector
+from models.tracker import StudentTracker
+from models.attention_analyzer import AttentionAnalyzer
+
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -247,4 +248,14 @@ async def list_sessions():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    
+    # Usar puerto dinámico para deployment (Render, Railway, etc.)
+    port = int(os.getenv("PORT", 8000))
+    
+    uvicorn.run(
+        app, 
+        host="0.0.0.0", 
+        port=port,
+        log_level="info"
+    )
